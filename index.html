@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行李吊牌製作器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="stage">
+
+  <h1>恭喜結束旅程<br>離開展間前，歡迎製作一個屬於自己的行李掛牌！</h1>
+  <p class="sub">step 1.選擇樣式　step 2.填寫內容　step 3.按下「製作」鍵，儲存專屬掛牌圖片</p>
+
+  <div class="route-picker">
+    <button type="button" class="route-btn" data-route="佛">佛教</button>
+    <button type="button" class="route-btn" data-route="道">道教</button>
+    <button type="button" class="route-btn" data-route="來義鄉排灣族">來義鄉排灣族</button>
+  </div>
+
+  <div class="tag" id="tag">
+    <div class="stub">
+      <div class="hole"></div>
+      <svg class="string" width="150" height="100" viewBox="0 0 150 100">
+        <path d="M136,14 C110,50 60,44 16,82" fill="none" stroke="#cbb27a" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M16,82 L6,76 M16,82 L10,92 M16,82 L20,94" stroke="#cbb27a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="136" cy="10" r="4.5" fill="#cbb27a"/>
+      </svg>
+    </div>
+    <div class="body">
+      <div class="row-top">
+        <div class="name-field">
+          <input type="text" id="f_to" placeholder="請輸入名稱">
+        </div>
+        <div class="visit-time">
+          <span class="label">觀展時間</span>
+          <span class="value" id="visitTime"></span>
+        </div>
+      </div>
+
+      <div class="msg-wrap">
+        <div class="msg-box">
+          <textarea id="f_message" rows="1" maxlength="80" placeholder="請寫下對自己的生命旅程的期許"></textarea>
+          <img class="icon-img" id="iconImg" alt="">
+        </div>
+      </div>
+
+      <div class="barcode-row">
+        <div class="barcode" id="barcode"></div>
+        <div class="tagline">✈ 終章未完，再次啟航 ✈</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="make-btn" id="makeBtn">製作</button>
+
+</div>
+
+<!-- hidden canvas used only at export time, not shown to the user -->
+<canvas id="exportCanvas" width="1540" height="712" style="display:none;"></canvas>
+
+<script src="images-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

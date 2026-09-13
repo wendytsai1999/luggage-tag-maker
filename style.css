@@ -1,0 +1,275 @@
+:root{
+  --paper:#ffffff;
+  --text:#1a1a1a;
+  --muted:#8a8a8a;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--paper);
+  color:var(--text);
+  font-family:'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:48px clamp(28px, 9vw, 120px);
+}
+
+.stage{
+  width:100%;
+  max-width:720px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+h1{
+  font-weight:700;
+  font-size:clamp(17px, 2.6vw, 22px);
+  margin:0 0 4px;
+  text-align:center;
+  line-height:1.4;
+}
+p.sub{
+  font-size:15px;
+  color:var(--muted);
+  margin:0 0 22px;
+  text-align:center;
+  font-weight:400;
+}
+
+/* ---- route / theme picker: a STYLE selector, not tag content ---- */
+.route-picker{
+  display:flex;
+  gap:10px;
+  margin-bottom:22px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.route-btn{
+  font-family:inherit;
+  font-size:14px;
+  font-weight:500;
+  padding:10px 22px;
+  border-radius:999px;
+  border:1.5px solid #d8d8d8;
+  background:#fff;
+  color:#555;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.route-btn:hover{ border-color:#b8b8b8; }
+.route-btn.active{
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 6px 16px rgba(0,0,0,0.18);
+}
+/* each theme's gradient is duplicated here (button preview) and in the
+   THEMES object in script.js (live tag + canvas export) — keep both in sync */
+.route-btn[data-route="佛"].active{ background:linear-gradient(135deg,#D9A43C 0%, #B8791F 55%, #6E3A0F 100%); }
+.route-btn[data-route="道"].active{ background:linear-gradient(135deg,#3B4CB0 0%, #4A3590 55%, #1E1740 100%); }
+.route-btn[data-route="來義鄉排灣族"].active{ background:linear-gradient(135deg,#A85A2E 0%, #7A3016 55%, #3D1608 100%); }
+
+/* ---- the tag itself ---- */
+.tag{
+  position:relative;
+  width:660px;
+  max-width:100%;
+  aspect-ratio:16/9.2;
+  background:linear-gradient(135deg,#5b6472 0%, #333a45 55%, #1b1f27 100%); /* neutral default; applyTheme() overrides this once a route is chosen */
+  border:3px dashed rgba(255,255,255,0.75);
+  border-radius:16px;
+  display:flex;
+  box-shadow:0 20px 36px rgba(0,0,0,0.25);
+  transition:background 0.4s ease;
+  overflow:visible; /* lets the cord (.string) hang past the tag's own edge */
+}
+/* subtle kraft-paper grain, sits on top of the gradient like real card stock.
+   the noise filter writes its luminance straight into the alpha channel, so
+   it shows up as real speckles instead of disappearing under a blend mode. */
+.tag::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:13px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch' result='t'/><feColorMatrix in='t' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.6 0.6 0.6 0 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size:160px 160px;
+  opacity:0.5;
+  pointer-events:none;
+}
+.stub{
+  position:relative;
+  width:78px;
+  flex:none;
+  border-right:3px dashed rgba(255,255,255,0.75);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.stub .hole{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  border:3px dashed rgba(255,255,255,0.85);
+  background:transparent;
+}
+/* a cord threaded through the punch hole, sagging out past the tag's left
+   edge like a real hang tag string — deliberately allowed to overflow both
+   .stub and .tag (both are overflow:visible) */
+.string{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-136px, -10px);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35));
+  pointer-events:none;
+  z-index:2;
+}
+.body{
+  flex:1;
+  padding:20px 52px 22px 28px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  min-width:0;
+}
+.row-top{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+.name-field{
+  flex:1;
+  min-width:0;
+  height:56px;
+  border:2.5px dashed rgba(255,255,255,0.8);
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+}
+.name-field input{
+  width:100%;
+  border:none;
+  background:transparent;
+  outline:none;
+  color:#fff;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:700;
+}
+.name-field input::placeholder{ color:#fff; opacity:1; }
+
+.visit-time{
+  flex:none;
+  text-align:right;
+  white-space:nowrap;
+}
+.visit-time .label{
+  display:block;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#fff;
+  margin-bottom:2px;
+}
+.visit-time .value{
+  font-size:16px;
+  font-weight:700;
+  color:#fff;
+}
+
+.msg-wrap{
+  position:relative;
+  flex:1;
+  min-height:0;
+  margin-bottom:44px;
+  display:flex;
+  align-items:center; /* centers .msg-box vertically in the leftover space */
+}
+.msg-box{
+  position:relative;
+  width:100%;
+  height:112px; /* fixed, so the icon (height:100%) never stretches this box */
+  border:2.5px dashed rgba(255,255,255,0.8);
+  border-radius:14px;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.msg-box textarea{
+  flex:1;
+  min-width:0;
+  max-height:100%;
+  border:none;
+  background:transparent;
+  outline:none;
+  resize:none;
+  overflow-y:auto;
+  color:#fff;
+  font-family:inherit;
+  font-size:16px;
+  line-height:1.6;
+  font-weight:700;
+  display:block;
+}
+.msg-box textarea::placeholder{ color:#fff; opacity:1; }
+
+/* the source art is black linework on a transparent PNG; invert() flips
+   it to white so it always matches the tag's white text, no matter which
+   file is dropped in under this name */
+.icon-img{
+  flex:none;
+  height:100%;
+  width:auto;
+  max-width:38%;
+  object-fit:contain;
+  filter:invert(1);
+  display:block;
+}
+
+.barcode-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+}
+.barcode{
+  display:flex;
+  align-items:flex-end;
+  gap:1.5px;
+  height:26px;
+  flex:none;
+}
+.barcode span{
+  display:block;
+  height:100%;
+  background:#fff;
+}
+.tagline{
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#fff;
+  white-space:nowrap;
+}
+
+.make-btn{
+  margin-top:28px;
+  padding:13px 34px;
+  background:var(--text);
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  font-family:inherit;
+  font-weight:700;
+  font-size:14px;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:background 0.2s ease;
+}
+.make-btn:hover{ background:#000; }
